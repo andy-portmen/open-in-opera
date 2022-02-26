@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "hosts": {
+      "title": "List of Hosts",
+      "description": "List of domains to open with the Opera browser when the link is opened with left-click",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "urls": {
+      "title": "List of URLs",
+      "description": "List of URLs to open with the Opera browser when the link is opened with left-click",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "faqs": {
+      "title": "Open FAQs Page on Updates",
+      "type": "boolean"
+    },
+    "reverse": {
+      "title": "Enable Reversed Left-Click Mode",
+      "type": "boolean"
+    }
+  }
+}

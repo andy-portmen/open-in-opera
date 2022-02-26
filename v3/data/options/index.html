@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open In Opera :: Options Page</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <h2>With <a target="_blank" data-href="faq7">Keyboard Mouse-Click Combinations</a></h2>
+  <table class="tbl">
+    <tr>
+      <td><label for="enabled">Enabled</label></td>
+      <td><input id="enabled" type="checkbox"></td>
+    </tr>
+    <tr>
+      <td>Mouse click<sup>4</sup></td>
+      <td>
+        <label>Shift <input id="shiftKey" type="checkbox"></label>&nbsp;+&nbsp;
+        <label>Alt <input id="altKey" type="checkbox"></label>&nbsp;+&nbsp;
+        <label>Ctrl <input id="ctrlKey" type="checkbox"></label>&nbsp;+&nbsp;
+        <label>Meta <input id="metaKey" type="checkbox"></label>&nbsp;+&nbsp;
+        <select id="button">
+          <option value=0>Left Click</option>
+          <option value=1 disabled="true">Middle Click</option>
+          <option value=2 disabled="true">Right Click</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <h2>With Left-Click</h2>
+  <table class="tbl">
+    <tr>
+      <td colspan="2" style="text-align: left; white-space: normal;">Comma-separated list of domains to open with the Opera browser when the link is opened with left-click<sup>1</sup></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea id="hosts" style="width: 100%" rows="5" placeholder="e.g.: www.example.com, bing.com"></textarea></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: left; white-space: normal;"><a target="_blank" data-href="faq26">Comma-separated list of URLs</a> to open with the Opera browser when the link is opened with left-click. You can use "URL Pattern" API for matching. Read the FAQs page for more info.<sup>1</sup></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea id="urls" style="width: 100%" rows="5" placeholder="e.g.: https://www.google.com/, https://example.com/"></textarea></td>
+    </tr>
+  </table>
+  <div class="grid">
+    <label for="reverse"><a target="_blank" data-href="faq24">Reverse Mode</a><sup>5</sup></label>
+    <input type="checkbox" id="reverse">
+    <label for="topRedict">Consider even top-level navigation<sup>6</sup></label>
+    <input type="checkbox" id="topRedict">
+  </div>
+  <h2>Other Options</h2>
+  <div class="grid">
+    <label for="faqs">Open FAQs page on updates</label> <input type="checkbox" id="faqs">
+    <label for="closeme">Close the source tab when link is pushed</label> <input type="checkbox" id="closeme">
+    <label for="multiple">Open multiple links at once<sup>3</sup></label> <input type="checkbox" id="multiple">
+  </div>
+  <div>
+    <span style="margin-top: 10px; margin-bottom: 5px; display: block">Path to the executable<sup>2</sup>:</span>
+    <div style="display: flex;">
+      <input type="text" id="path" placeholder="example D:\\Opera\\launcher.exe" style="flex: 1;">
+    </div>
+  </div>
+
+  <div class="admin">
+    <div>This extension supports managed storage. Some of the preferences can be pre-configured by <a href="https://add0n.com/open-in.html#faq17">the domain administrator</a></div>
+
+    <div style="margin-top: 10px;">To apply command-line options, create a batch file, and insert the path of this batch file inside the "Path to the executable".</div>
+  </div>
+
+  <p>
+    <button id="support">Support Development</button>
+    <button id="reset">Reset Settings</button> - <button id="save">Save Options</button>
+    <span id="status"></span>
+  </p>
+
+  <hr style="margin: 10px 0">
+  <ol>
+    <li>It is possible to use "managed storage" to set the default host and URL list. This is useful for administrators to force opening a set of URLs or hostnames in another browser. Instruction on how to setup the managed storage can be found in the FAQs page.</li>
+    <li>On Windows, if the path to the executable is not provided (is empty) <code>%ProgramFiles%\\Opera\\launcher.exe</code> is used. On Linux, if the path is not set, it is assumed <code>opera</code> binary can be found in the global PATH environment. On Mac OS, <code>open -a</code> command is used (with <code>opera</code> as the application or whatever is in the input).</li>
+    <li>By activating this option all the requested URLs are sent to the Opera browser at once. Only activate this option if the Opera browser in your operating system is capable of handling this type of requests.</li>
+    <li>Not all key combinations are allowed in all operating systems.</li>
+    <li>When enabled, all left-click links except the ones that match with at least one condition will be sent to the Opera browser.</li>
+    <li>If checked, the extension validates top-level navigation with the list of left-click hostnames and URLs. If matched, the URL is sent to the Opera browser, and the navigation is blocked.</li>
+  </ol style="padding-left: 1.8em;">
+
+  <script src="index.js"></script>
+</body>
+</html>
