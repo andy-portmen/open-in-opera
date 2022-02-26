@@ -3,7 +3,7 @@
   "name": "Open in Opera Browser",
   "description": "__MSG_description__",
   "default_locale": "en",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage_url": "https://add0n.com/open-in.html?from=opera",
   "permissions": [
     "tabs",
