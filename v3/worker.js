@@ -14,7 +14,7 @@ const app = {
     windows: {
       name: 'cmd',
       args: ['/s/c', 'start', 'opera "%url;"'],
-      prgfiles: '%ProgramFiles%\\Opera\\launcher.exe'
+      prgfiles: '%LocalAppData%\\Programs\\Opera\\launcher.exe'
     }
   }
 };
@@ -81,9 +81,9 @@ const locate = cb => chrome.runtime.sendNativeMessage(app.id, {
   if (res && res.env && res.env.ProgramFiles) {
     chrome.storage.local.set({
       path: app.runtime.windows.prgfiles
-        .replace('%LOCALAPPDATA%', res.env.LOCALAPPDATA)
-        .replace('%ProgramFiles(x86)%', res.env['ProgramFiles(x86)'])
-        .replace('%ProgramFiles%', res.env.ProgramFiles)
+        .replace(/%localappdata%/ig, res.env.LOCALAPPDATA)
+        .replace(/%programfiles\(x86\)%/ig, res.env['ProgramFiles(x86)'])
+        .replace(/%programfiles%/ig, res.env.ProgramFiles)
     }, cb);
   }
   else {
