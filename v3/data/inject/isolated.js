@@ -1,5 +1,27 @@
 'use strict';
 
+let port;
+try {
+  port = document.getElementById('hb-kl-rc-oi');
+  port.remove();
+}
+catch (e) {
+  port = document.createElement('span');
+  port.id = 'hb-kl-rc-oi';
+  document.documentElement.append(port);
+}
+port.addEventListener('command', e => {
+  const {block, url, close} = e.detail;
+
+  if (block === 'true') {
+    chrome.runtime.sendMessage({
+      cmd: 'open-in',
+      url,
+      close: close === 'true'
+    });
+  }
+});
+
 const config = {};
 
 const validate = (a, callback, isTop = false) => {
@@ -46,20 +68,25 @@ const validate = (a, callback, isTop = false) => {
 };
 
 Object.assign(config, {
-  enabled: false,
-  button: 0,
-  shiftKey: true,
-  ctrlKey: false,
-  altKey: true,
-  metaKey: false,
-  hosts: [],
-  urls: [],
-  keywords: [],
-  topRedict: false,
-  reverse: false
+  'user-script': '',
+  'enabled': false,
+  'button': 0,
+  'shiftKey': true,
+  'ctrlKey': false,
+  'altKey': true,
+  'metaKey': false,
+  'hosts': [],
+  'urls': [],
+  'keywords': [],
+  'topRedict': false,
+  'reverse': false
 });
 chrome.storage.local.get(config, prefs => {
   Object.assign(config, prefs);
+  port.dispatchEvent(new CustomEvent('add-or-remove', {
+    detail: config['user-script']
+  }));
+
   // managed
   chrome.storage.managed.get({
     hosts: [],
@@ -120,7 +147,15 @@ chrome.storage.local.get(config, prefs => {
   });
 });
 // update preference
-chrome.storage.onChanged.addListener(e => Object.keys(e).forEach(n => config[n] = e[n].newValue));
+chrome.storage.onChanged.addListener(e => {
+  Object.keys(e).forEach(n => config[n] = e[n].newValue);
+
+  if ('user-script' in e) {
+    port.dispatchEvent(new CustomEvent('add-or-remove', {
+      detail: config['user-script']
+    }));
+  }
+});
 
 document.addEventListener('click', e => {
   const redirect = url => {
@@ -161,3 +196,9 @@ document.addEventListener('click', e => {
     }
   }
 }, true);
+
+chrome.runtime.onMessage.addListener(request => {
+  if (request.method === 'notify') {
+    alert(request.message);
+  }
+});

@@ -3,8 +3,8 @@
   "name": "Open in Opera Browser",
   "description": "__MSG_description__",
   "default_locale": "en",
-  "version": "0.3.2",
-  "homepage_url": "https://add0n.com/open-in.html?from=opera",
+  "version": "0.3.4",
+  "homepage_url": "https://webextension.org/listing/open-in.html?from=opera",
   "permissions": [
     "tabs",
     "contextMenus",
@@ -15,7 +15,8 @@
     "downloads"
   ],
   "background": {
-    "service_worker": "worker.js"
+    "service_worker": "worker.js",
+    "scripts": ["context.js", "worker.js"]
   },
   "storage": {
     "managed_schema": "storage/opera.json"
@@ -31,10 +32,18 @@
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["data/inject.js"],
+    "js": ["data/inject/main.js"],
     "run_at": "document_start",
     "all_frames": true,
-    "match_about_blank": true
+    "match_about_blank": true,
+    "world": "MAIN"
+  }, {
+    "matches": ["<all_urls>"],
+    "js": ["data/inject/isolated.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true,
+    "world": "ISOLATED"
   }],
   "action": {},
   "options_ui": {
@@ -42,8 +51,12 @@
     "open_in_tab": true
   },
   "commands": {
-    "_execute_action": {
-      "description": "Press the action button"
+    "_execute_action": {}
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{8db82a75-48fd-452a-81cf-bd40b2e60dac}",
+      "strict_min_version": "128.0"
     }
   }
 }

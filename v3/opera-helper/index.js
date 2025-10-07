@@ -13,7 +13,9 @@ else if (navigator.userAgent.indexOf('Linux') !== -1) {
 document.body.dataset.os = (os === 'mac' || os === 'linux') ? 'linux' : 'windows';
 
 if (['Lin', 'Win', 'Mac'].indexOf(navigator.platform.substr(0, 3)) === -1) {
-  window.alert('Sorry! The "native client" only supports the following operating systems at the moment:\n\nWindows, Mac, and Linux');
+  alert(`Sorry! The "native client" only supports the following operating systems at the moment:
+
+Windows, Mac, and Linux`);
 }
 
 const notify = (() => {
@@ -25,7 +27,7 @@ const notify = (() => {
       elem.textContent = msg;
       elem.dataset.type = type;
       parent.appendChild(elem);
-      window.setTimeout(() => {
+      setTimeout(() => {
         try {
           parent.removeChild(elem);
         }
@@ -57,7 +59,7 @@ document.addEventListener('click', ({target}) => {
           url: req.response.assets.filter(a => a.name === os + '.zip')[0].browser_download_url
         }, () => {
           notify.show('success', 'Download is started. Extract and install when it is done');
-          window.setTimeout(() => {
+          setTimeout(() => {
             notify.destroy();
             document.body.dataset.step = 1;
           }, 3000);
@@ -65,7 +67,7 @@ document.addEventListener('click', ({target}) => {
       };
       req.onerror = () => {
         notify('error', 'Something went wrong! Please download the package manually');
-        window.setTimeout(() => {
+        setTimeout(() => {
           window.open('https://github.com/andy-portmen/native-client/releases');
         }, 5000);
       };

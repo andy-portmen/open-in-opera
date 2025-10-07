@@ -1,49 +1,50 @@
 'use strict';
 
-// links
-for (const a of [...document.querySelectorAll('[data-href]')]) {
-  if (a.hasAttribute('href') === false) {
-    a.href = chrome.runtime.getManifest().homepage_url + '#' + a.dataset.href;
-  }
-}
+const toast = (message, out = 750) => {
+  const status = document.getElementById('status');
+  status.textContent = message;
+  clearTimeout(toast.id);
+  toast.id = setTimeout(() => status.textContent = '', out);
+};
 
-function restore() {
+async function restore() {
   // Use default value color = 'red' and likesColor = true.
-  chrome.storage.local.get({
-    path: '',
-    enabled: false,
-    altKey: true,
-    shiftKey: true,
-    ctrlKey: false,
-    metaKey: false,
-    button: 0,
-    faqs: true,
-    closeme: false,
-    multiple: false,
-    hosts: [],
-    urls: [],
-    reverse: false,
-    topRedict: false
-  }, prefs => {
-    document.getElementById('path').value = prefs.path;
-    document.getElementById('enabled').checked = prefs.enabled;
-    document.getElementById('altKey').checked = prefs.altKey;
-    document.getElementById('shiftKey').checked = prefs.shiftKey;
-    document.getElementById('ctrlKey').checked = prefs.ctrlKey;
-    document.getElementById('metaKey').checked = prefs.metaKey;
-    document.getElementById('button').selectedIndex = prefs.button;
-    document.getElementById('faqs').checked = prefs.faqs;
-    document.getElementById('closeme').checked = prefs.closeme;
-    document.getElementById('multiple').checked = prefs.multiple;
-    document.getElementById('hosts').value = prefs.hosts.join(', ');
-    document.getElementById('urls').value = prefs.urls.join(', ');
-    document.getElementById('reverse').checked = prefs.reverse;
-    document.getElementById('topRedict').checked = prefs.topRedict;
+  const prefs = await chrome.storage.local.get({
+    'path': '',
+    'enabled': false,
+    'altKey': true,
+    'shiftKey': true,
+    'ctrlKey': false,
+    'metaKey': false,
+    'button': 0,
+    'faqs': true,
+    'closeme': false,
+    'multiple': false,
+    'hosts': [],
+    'urls': [],
+    'reverse': false,
+    'topRedict': false,
+    'user-script': ''
   });
+  document.getElementById('path').value = prefs.path;
+  document.getElementById('enabled').checked = prefs.enabled;
+  document.getElementById('altKey').checked = prefs.altKey;
+  document.getElementById('shiftKey').checked = prefs.shiftKey;
+  document.getElementById('ctrlKey').checked = prefs.ctrlKey;
+  document.getElementById('metaKey').checked = prefs.metaKey;
+  document.getElementById('button').selectedIndex = prefs.button;
+  document.getElementById('faqs').checked = prefs.faqs;
+  document.getElementById('closeme').checked = prefs.closeme;
+  document.getElementById('multiple').checked = prefs.multiple;
+  document.getElementById('hosts').value = prefs.hosts.join(', ');
+  document.getElementById('urls').value = prefs.urls.join(', ');
+  document.getElementById('reverse').checked = prefs.reverse;
+  document.getElementById('topRedict').checked = prefs.topRedict;
+  document.getElementById('user-script').value = prefs['user-script'];
 }
 document.addEventListener('DOMContentLoaded', restore);
 
-document.getElementById('save').addEventListener('click', () => {
+document.getElementById('save').addEventListener('click', async () => {
   const path = document.getElementById('path').value;
   const enabled = document.getElementById('enabled').checked;
   const altKey = document.getElementById('altKey').checked;
@@ -59,7 +60,7 @@ document.getElementById('save').addEventListener('click', () => {
   const reverse = document.getElementById('reverse').checked;
   const topRedict = document.getElementById('topRedict').checked;
 
-  chrome.storage.local.set({
+  await chrome.storage.local.set({
     path,
     enabled,
     altKey,
@@ -70,34 +71,29 @@ document.getElementById('save').addEventListener('click', () => {
     faqs,
     closeme,
     multiple,
-    hosts: hosts.split(/\s*,\s*/).map(s => s.replace('http://', '')
+    'hosts': hosts.split(/\s*,\s*/).map(s => s.replace('http://', '')
       .replace('https://', '')
       .split('/')[0].trim())
       .filter((h, i, l) => h && l.indexOf(h) === i),
-    urls: urls.split(/\s*,\s*/).filter(s => s.startsWith('http') || s.startsWith('file'))
+    'urls': urls.split(/\s*,\s*/).filter(s => s.startsWith('http') || s.startsWith('file'))
       .filter((h, i, l) => h && l.indexOf(h) === i),
     reverse,
-    topRedict
-  }, () => {
-    restore();
-    const status = document.getElementById('status');
-    status.textContent = 'Options saved.';
-    setTimeout(() => status.textContent = '', 750);
+    topRedict,
+    'user-script': document.getElementById('user-script').value
   });
+  restore();
+  toast('Options saved.');
 });
 
-document.getElementById('reset').addEventListener('click', e => {
+document.getElementById('reset').addEventListener('click', async e => {
   if (e.detail === 1) {
-    const status = document.getElementById('status');
-    window.setTimeout(() => status.textContent = '', 750);
-    status.textContent = 'Double-click to reset!';
+    toast('Double-click to reset!');
   }
   else {
     localStorage.clear();
-    chrome.storage.local.clear(() => {
-      chrome.runtime.reload();
-      window.close();
-    });
+    await chrome.storage.local.clear();
+    chrome.runtime.reload();
+    window.close();
   }
 });
 
@@ -105,3 +101,10 @@ document.getElementById('reset').addEventListener('click', e => {
 document.getElementById('support').addEventListener('click', () => chrome.tabs.create({
   url: chrome.runtime.getManifest().homepage_url + '&rd=donate'
 }));
+
+// links
+for (const a of [...document.querySelectorAll('[data-href]')]) {
+  if (a.hasAttribute('href') === false) {
+    a.href = chrome.runtime.getManifest().homepage_url + '#' + a.dataset.href;
+  }
+}
